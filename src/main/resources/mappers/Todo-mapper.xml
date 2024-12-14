@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ss.ToDoApplication.todo.TodoMapper">
+	<!-- 할 일 조회 -->
+	<select id="getTodoList" resultType="com.ss.ToDoApplication.todo.TodoDTO">
+		SELECT
+		t.todo_id,
+		t.todo_content,
+		t.todo_status,
+		s.status_name
+		FROM
+		todo t
+		JOIN
+		status s ON t.todo_status = s.status_id
+		ORDER BY
+        t.todo_id DESC
+	</select>
+	
+	<!-- 할 일 추가 -->
+	<insert id="addTodo" parameterType="com.ss.ToDoApplication.todo.TodoDTO" useGeneratedKeys="true" keyProperty="todoId">
+		INSERT INTO todo (todo_content, todo_status)
+		VALUES (#{todoContent}, #{todoStatus})
+	</insert>
+	
+	<!-- 할 일 수정 -->
+	<update id="updateTodo" parameterType="com.ss.ToDoApplication.todo.TodoDTO">
+		UPDATE todo
+		SET
+			<if test="todoContent != null">
+				todo_content = #{todoContent},
+			</if>
+			<if	test="todoStatus != null">
+				todo_status = #{todoStatus}
+			</if>
+		WHERE todo_id = #{todoId}
+	</update>
+	
+	<!-- 할 일 삭제 -->
+	<delete id="deleteTodo" parameterType="int">
+		DELETE FROM todo
+		WHERE todo_id = #{todoId}
+	</delete>
+	
+</mapper>

@@ -1,9 +1,9 @@
-<<<<<<< HEAD
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.env
 
 ### STS ###
 .apt_generated
@@ -57,4 +57,3 @@ build/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
->>>>>>> b859e6216908c8c2b836f65c6d4f94aac0eacac4
