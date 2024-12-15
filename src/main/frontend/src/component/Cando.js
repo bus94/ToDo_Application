@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Header from './Header';
+import TodoInput from './TodoInput';
+import TodoList from './TodoList';
 import styles from '../styles/Cando.module.css';
-import { Button } from 'react-bootstrap';
 
 const Cando = () => {
     const [todos, setTodos] = useState([]); // 전체 할 일
@@ -45,16 +47,19 @@ const Cando = () => {
 
     // 할 일 추가
     const addTodo = async () => {
-        if (newTodo.trim()) {
-            const newTodoFromServer = await fetchAPI('http://localhost:8080/api/todo', 'POST', {
-                todo_content: newTodo,
-                todo_status: 0,
-            });
-            setTodos([newTodoFromServer, ...todos]);
-            console.log('newTodoFromServer:', newTodoFromServer);
-            setNewTodo('');
-            setHoveredTodoId(null);
+        if (!newTodo.trim()) {
+            alert('내용을 입력해주세요.');
+            return;
         }
+
+        const newTodoFromServer = await fetchAPI('http://localhost:8080/api/todo', 'POST', {
+            todo_content: newTodo,
+            todo_status: 0,
+        });
+        setTodos([newTodoFromServer, ...todos]);
+        setNewTodo('');
+        setHoveredTodoId(null);
+
     };
 
     // 할 일 업데이트 (내용 수정, 상태 변경(전체 할 일 ↔ 완료된 일))
@@ -84,19 +89,20 @@ const Cando = () => {
 
     // 할 일 삭제
     const deleteTodo = async (todo_id) => {
-        // 삭제 확인
-        const isConfirmed = window.confirm("삭제하시겠습니까?");
-        if(!isConfirmed) {
-            return;
-        }
+        await fetchAPI(`http://localhost:8080/api/todo/${todo_id}`, 'DELETE');
 
-        const response = await fetchAPI(`http://localhost:8080/api/todo/${todo_id}`, 'DELETE');
-        
-        if (response && response.message) {
-            alert(response.message);
-        }
-        
         setTodos(todos.filter(todo => todo.todo_id !== todo_id));
+    }
+
+    // 이메일 전송
+    const sendEmail = async () => {
+        try {
+            await fetchAPI('http://localhost:8080/api/email/send', 'POST');
+            alert('이메일 전송이 완료되었습니다.');
+        } catch (error) {
+            console.error('Error sending email:', error);
+            alert('이메일 전송에 실패했습니다.');
+        }
     }
 
     // 검색 필터링
@@ -120,13 +126,20 @@ const Cando = () => {
 
     // 수정된 내용 저장
     const saveEditedContent = async (todo_id) => {
-        if (editingContent.trim()) {
-            await updateTodo(todo_id, "content", editingContent);
+        if (!editingContent.trim()) {
+            alert('내용을 입력하세요.');
 
             // 수정 완료 후 초기화
             setEditingTodoId(null);
             setEditingContent('');
+            return
         }
+
+        await updateTodo(todo_id, "content", editingContent);
+
+        // 수정 완료 후 초기화
+        setEditingTodoId(null);
+        setEditingContent('');
     }
 
     // 수정 취소
@@ -137,78 +150,42 @@ const Cando = () => {
 
     return (
         <div className={styles.main_container}>
-            <header className={styles.header}>
-                <h1>Can Do</h1>
-                <div className={styles.search}>
-                    <input type='text' placeholder='단어 검색' value={search} onChange={(e) => setSearch(e.target.value)} />
-                    <Button onClick={addTodo}>search</Button>
-                </div>
-            </header>
-
-            <div className={styles.todo_main_container}>
-                <div className={styles.input_todo}>
-                    <input type='text' placeholder='할 일을 추가해주세요.' value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
-                    <Button onClick={addTodo}>add</Button>
-                </div>
-
+            <Header search={search} setSearch={setSearch} sendEmail={sendEmail} />
+            <div className={styles.total_container}>
+                <TodoInput newTodo={newTodo} setNewTodo={setNewTodo} addTodo={addTodo} />
                 <div className={styles.todo_lists_container}>
-                    <div className={styles.total_todo_container}>
-                        <h2>To-Do List</h2>
-                        <ul>
-                            {filteredTodos.filter(todo => todo.todo_status === 0).map(todo => (
-                                <li key={todo.todo_id} className={`${styles.total_todo}`} onMouseEnter={() => {console.log('onMouseEnter triggered for todo_id:', todo.todo_id); setHoveredTodoId(todo.todo_id);}} onMouseLeave={() => setHoveredTodoId(null)}>
-                                    <div className={styles.todo_content}>
-                                        <input type='checkbox' onChange={() => updateTodo(todo.todo_id, "status", todo.todo_status === 0 ? 1 : 0)} />
-                                        {editingTodoId === todo.todo_id ? (
-                                            <input ref={inputRef} type='text' value={editingContent} onChange={(e) => setEditingContent(e.target.value)} onBlur={() => saveEditedContent(todo.todo_id)} onKeyDown={(e) => {
-                                                if (e.key === 'Enter') saveEditedContent(todo.todo_id);
-                                                if (e.key === 'Escape') cancelEdit();
-                                            }} />
-                                        ) : (
-                                            <span onDoubleClick={() => editContent(todo.todo_id, todo.todo_content)}>
-                                                {todo.todo_content}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {hoveredTodoId === todo.todo_id && editingTodoId !== todo.todo_id && (
-                                        <div className={styles.icon_buttons}>
-                                            <button className={styles.edit_button} onClick={() => editContent(todo.todo_id, todo.todo_content)}>&nbsp;✏️</button>
-                                            <button className={styles.delete_button} onClick={() => deleteTodo(todo.todo_id)}>🗑️</button>
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className={styles.completed_todo_container}>
-                        <h2>Completed List</h2>
-                        <ul>
-                            {filteredTodos.filter(todo => todo.todo_status === 1).map(todo => (
-                                <li key={todo.todo_id} className={`${styles.total_todo} ${styles.completed_todo}`} onMouseEnter={() => setHoveredTodoId(todo.todo_id)} onMouseLeave={() => setHoveredTodoId(null)}>
-                                    <div className={styles.todo_content}>
-                                        <input type='checkbox' checked={todo.todo_status === 1} onChange={() => updateTodo(todo.todo_id, "status", todo.todo_status === 1 ? 0 : 1)} />
-                                        {editingTodoId === todo.todo_id ? (
-                                            <input type='text' value={editingContent} onChange={(e) => setEditingContent(e.target.value)} onBlur={() => saveEditedContent(todo.todo_id)} onKeyDown={(e) => {
-                                                if (e.key === 'Enter') saveEditedContent(todo.todo_id);
-                                                if (e.key === 'Escape') cancelEdit();
-                                            }} />
-                                        ) : (
-                                            <span onDoubleClick={() => editContent(todo.todo_id, todo.todo_content)}>
-                                                {todo.todo_content}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {hoveredTodoId === todo.todo_id && editingTodoId !== todo.todo_id && (
-                                        <div className={styles.icon_buttons}>
-                                            <button className={styles.edit_button} onClick={() => editContent(todo.todo_id, todo.todo_content)}>&nbsp;✏️</button>
-                                            <button className={styles.delete_button} onClick={() => deleteTodo(todo.todo_id)}>🗑️</button>
-                                        </div>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <TodoList
+                        todos={filteredTodos}
+                        updateTodo={updateTodo}
+                        deleteTodo={deleteTodo}
+                        editContent={editContent}
+                        saveEditedContent={saveEditedContent}
+                        cancelEdit={cancelEdit}
+                        setHoveredTodoId={setHoveredTodoId}
+                        hoveredTodoId={hoveredTodoId}
+                        editingTodoId={editingTodoId}
+                        editingContent={editingContent}
+                        setEditingContent={setEditingContent}
+                        inputRef={inputRef}
+                        status={0}
+                        emptyMessage={search.trim() ? '검색 결과가 없습니다' : '할 일을 추가해주세요'}
+                    />
+                    <TodoList
+                        todos={filteredTodos}
+                        updateTodo={updateTodo}
+                        deleteTodo={deleteTodo}
+                        editContent={editContent}
+                        saveEditedContent={saveEditedContent}
+                        cancelEdit={cancelEdit}
+                        setHoveredTodoId={setHoveredTodoId}
+                        hoveredTodoId={hoveredTodoId}
+                        editingTodoId={editingTodoId}
+                        editingContent={editingContent}
+                        setEditingContent={setEditingContent}
+                        inputRef={inputRef}
+                        status={1}
+                        emptyMessage={search.trim() ? '검색 결과가 없습니다' : '완료된 일이 없습니다'}
+                    />
                 </div>
             </div>
         </div>

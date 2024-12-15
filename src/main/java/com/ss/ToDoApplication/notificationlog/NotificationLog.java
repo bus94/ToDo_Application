@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,12 @@ public class NotificationLog {
 	@Column(name = "notificationlog_sent_date", nullable = false)
 	private LocalDate notificationlogSentDate;
 
-	@Column(name = "notificationlog_created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "notificationlog_created_at", nullable = false, updatable = false)
 	private LocalDateTime notificationlogCreatedAt;
+	
+	// 엔티티 저장 전 createdAt 값을 자동으로 설정
+	@PrePersist
+	protected void onCreate() {
+		this.notificationlogCreatedAt = LocalDateTime.now();
+	}
 }

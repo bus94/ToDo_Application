@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,6 +27,7 @@ public class TodoController {
 
 	// Get 요청
 	// 할 일 전체 리스트 가져오기
+	@Operation(summary = "할 일 목록 조회", description = "모든 할 일 목록을 조회합니다.")
 	@GetMapping("/todo")
 	public List<TodoDTO> getTodoList() {
 		System.out.println("todoList: " + service.getTodoList());
@@ -33,6 +36,7 @@ public class TodoController {
 
 	// Post 요청
 	// 할 일 추가
+	@Operation(summary = "할 일 추가", description = "새로운 할 일을 추가합니다.")
 	@PostMapping("/todo")
 	public TodoDTO addTodo(@RequestBody TodoDTO todoDTO) {
 		return service.addTodo(todoDTO);
@@ -40,6 +44,7 @@ public class TodoController {
 
 	// Put 요청
 	// 할 일 수정 (내용 및 상태)
+	@Operation(summary = "할 일 수정", description = "할 일의 내용 또는 상태를 수정합니다.")
 	@PutMapping("/todo/{todoId}")
 	public TodoDTO updateTodo(@PathVariable("todoId") int todoId, @RequestBody Map<String, Object> requestBody) {
 		TodoDTO todoDTO = new TodoDTO();
@@ -57,6 +62,7 @@ public class TodoController {
 	
 	// Delete 요청
 	// 할 일 삭제
+	@Operation(summary = "할 일 삭제", description = "할 일을 삭제합니다.")
 	@DeleteMapping("/todo/{todoId}")
 	public ResponseEntity<Map<String, Object>> deleteTodo(@PathVariable("todoId") int todoId) {
 		try {
