@@ -17,8 +17,8 @@ const TodoItem = ({
 }) => {
     return (
         <li
-            className={`${styles.total_todo} ${
-                todo.todo_status === 1 ? styles.completed_todo : ''
+            className={`${styles.todo_list} ${
+                todo.todo_status === 1 ? styles.completed_list : ''
             }`}
             onMouseEnter={() => setHoveredTodoId(todo.todo_id)}
             onMouseLeave={() => setHoveredTodoId(null)}

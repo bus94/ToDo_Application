@@ -11,6 +11,7 @@ import com.ss.ToDoApplication.todo.TodoService;
 
 import jakarta.annotation.PostConstruct;
 
+// 이메일 스케줄러
 @Component
 public class EmailScheduler {
 	private final EmailService emailService;
@@ -24,7 +25,8 @@ public class EmailScheduler {
 		this.notificationLogRepository = notificationLogRepository;
 	}
 	
-	// 매일 오전 9시 실행
+	// 매일 오전 9시 실행 (임
+	// 알림 로그에 전송 기록이 없는 경우 메일 전송
 	@Scheduled(cron = "0 0 9 * * ?")
 	public void run() {
 		// 메일 발송되었는지 확인
@@ -41,7 +43,7 @@ public class EmailScheduler {
 		}
 	}
 	
-	// 오전 9시 지나고 서버 실행 시 전송
+	// 오전 9시 이후 서버 실행 시 전송 여부 확인 후 메일 전송
 	@Scheduled(initialDelay = 1000, fixedRate = Long.MAX_VALUE)
 	public void sendEmailIfNotSent() {
 		if (!notificationLogRepository.existsByNotificationlogSentDate(today)) {

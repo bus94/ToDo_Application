@@ -5,20 +5,20 @@ import TodoList from './TodoList';
 import styles from '../styles/Cando.module.css';
 
 const Cando = () => {
-    const [todos, setTodos] = useState([]); // 전체 할 일
-    const [newTodo, setNewTodo] = useState(''); // 추가 할 일
-    const [search, setSearch] = useState(''); // 검색
-    const [hoveredTodoId, setHoveredTodoId] = useState(null); // hover된 todo_id
-    const [editingTodoId, setEditingTodoId] = useState(null); // 편집 중인 todo_id
-    const [editingContent, setEditingContent] = useState(''); // 편집 중인 todo_content
-    const inputRef = useRef(null);
+    const [todos, setTodos] = useState([]);                     // 전체 할 일 목록
+    const [newTodo, setNewTodo] = useState('');                 // 새로 추가 할 일 내용
+    const [search, setSearch] = useState('');                   // 검색어
+    const [hoveredTodoId, setHoveredTodoId] = useState(null);   // hover된 todo_id
+    const [editingTodoId, setEditingTodoId] = useState(null);   // 수정 중인 todo_id
+    const [editingContent, setEditingContent] = useState('');   // 수정 중인 todo_content
+    const inputRef = useRef(null);                              // 입력창 포커스 위한 Ref
 
-    // API 호출 함수
+    // 공통 API 호출 함수 (GET, POST, PUT, DELETE)
     const fetchAPI = async (url, method, body) => {
         try {
             const response = await fetch(url, {
                 method,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' }, // JSON 형식의 헤더
                 body: body ? JSON.stringify(body) : null,
             })
             if (!response.ok) throw new Error(`API reauest failed with status ${response.status}`);
@@ -40,6 +40,7 @@ const Cando = () => {
                 return response.json();
             })
             .then((data) => {
+                // 가져온 데이터를 todos에 저장
                 setTodos(data);
             })
             .catch((error) => console.error('Error fetching the data:', error));
@@ -53,20 +54,18 @@ const Cando = () => {
         }
 
         const newTodoFromServer = await fetchAPI('http://localhost:8080/api/todo', 'POST', {
-            todo_content: newTodo,
-            todo_status: 0,
+            todo_content: newTodo,                  // 추가 할 일 내용
+            todo_status: 0,                         // 0: 미완료
         });
-        setTodos([newTodoFromServer, ...todos]);
-        setNewTodo('');
-        setHoveredTodoId(null);
+        setTodos([newTodoFromServer, ...todos]);    // 새로 추가 할 일을 기존 목록 앞에 추가
+        setNewTodo('');                             // 입력창 초기화
+        setHoveredTodoId(null);                     // hover 상태 초기화
 
     };
 
     // 할 일 업데이트 (내용 수정, 상태 변경(전체 할 일 ↔ 완료된 일))
-    const updateTodo = async (todo_id, updateType, updatedValue) => {
-        console.log('수정할 todo_id:', todo_id)
-        console.log('수정할 updateType:', updateType)
-        console.log('수정할 updatedValue:', updatedValue)
+    const updateTodo = async (todo_id, updateType, updatedValue) => { // updateType: 수정할 유형 (content 또는 status)
+        // 에러 발생 시 복구용 데이터
         const previousTodos = [...todos];
 
         try {
@@ -74,12 +73,11 @@ const Cando = () => {
                 updateType,
                 ...(updateType === 'content' ? { todo_content: updatedValue } : { todo_status: updatedValue })
             });
-
+            
+            // 수정 결과를 todos에 추가
             setTodos((prevTodos) => prevTodos.map((todo) => todo.todo_id === todo_id ? {
                 ...todo, [updateType === 'content' ? 'todo_content' : 'todo_status']: updatedValue,
             } : todo));
-
-            console.log("서버로 수정 보내고 난 todos:", todos);
         } catch (error) {
             console.error('Error updating todo:', error);
             alert('업데이트에 실패했습니다. 이전 상태로 복구합니다.');
@@ -114,13 +112,14 @@ const Cando = () => {
 
     // 내용 수정
     const editContent = (todo_id, todo_content) => {
-        setEditingTodoId(todo_id);
-        setEditingContent(todo_content);
+        setEditingTodoId(todo_id);          // 수정 중인 todo_id 설정
+        setEditingContent(todo_content);    // 기존 내용 저장
     }
 
+    // 수정 입력창에 포커스 설정
     useEffect(() => {
         if (editingTodoId && inputRef.current) {
-            inputRef.current.focus();
+            inputRef.current.focus();       // 입력창에 포커스
         }
     }, [editingTodoId]);
 
@@ -153,7 +152,7 @@ const Cando = () => {
             <Header search={search} setSearch={setSearch} sendEmail={sendEmail} />
             <div className={styles.total_container}>
                 <TodoInput newTodo={newTodo} setNewTodo={setNewTodo} addTodo={addTodo} />
-                <div className={styles.todo_lists_container}>
+                <div className={styles.total_lists_container}>
                     <TodoList
                         todos={filteredTodos}
                         updateTodo={updateTodo}

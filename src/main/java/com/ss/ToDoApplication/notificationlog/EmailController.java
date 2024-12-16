@@ -14,6 +14,7 @@ import com.ss.ToDoApplication.todo.TodoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+// 이메일 전송 컨트롤러
 @RestController
 @RequestMapping("/api/email")
 public class EmailController {
@@ -25,10 +26,13 @@ public class EmailController {
 		this.todoService = todoService;
 	}
 
-	 @Operation(summary = "이메일 전송", description = "모든 할 일 목록을 이메일로 전송합니다.")
+	// 이메일 전송 API
+	@Operation(summary = "이메일 전송", description = "모든 할 일 목록을 이메일로 전송합니다.")
 	@PostMapping("/send")
 	public ResponseEntity<Map<String, String>> sendEmail() {
+		// 모든 할 일 가져오기
 		List<TodoDTO> todos = todoService.getTodoList();
+		// 이메일 전송
 		service.sendTodoEmail(todos);
 		
 		// JSON 형식으로 메시지 반환

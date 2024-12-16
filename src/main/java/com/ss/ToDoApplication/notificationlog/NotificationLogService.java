@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+// NotificationLog 서비스
 @Service
 public class NotificationLogService {
 	private final NotificationLogRepository repository;

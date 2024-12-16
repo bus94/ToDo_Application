@@ -22,7 +22,7 @@ const TodoList = ({
     const filteredTodos = todos.filter(todo => todo.todo_status === status);
 
     return (
-        <div className={status === 0 ? styles.total_todo_container : styles.completed_todo_container}>
+        <div className={status === 0 ? styles.todo_list_container : styles.completed_list_container}>
             <h2>{status === 0 ? 'To-Do List' : 'Completed List'}</h2>
             {filteredTodos.length === 0 ? (
                 <p className={`${styles.todo_content} ${styles.comment}`}>{emptyMessage}</p>

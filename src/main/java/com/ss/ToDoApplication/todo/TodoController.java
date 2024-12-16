@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+// Todo 컨트롤러
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,7 +31,6 @@ public class TodoController {
 	@Operation(summary = "할 일 목록 조회", description = "모든 할 일 목록을 조회합니다.")
 	@GetMapping("/todo")
 	public List<TodoDTO> getTodoList() {
-		System.out.println("todoList: " + service.getTodoList());
 		return service.getTodoList();
 	}
 

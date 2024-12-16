@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+// NotificationLog 컨트롤러
 @RestController
 @RequestMapping("/notification-log")
 public class NotificationLogController {
@@ -25,7 +26,7 @@ public class NotificationLogController {
 		return service.getAllLogs();
 	}
 
-	// 메일을 보냈는지 여부 확인
+	// 오늘 메일을 보냈는지 여부 확인
 	@Operation(summary = "오늘 알림 전송 여부 확인", description = "오늘 알림이 전송되었는지 확인합니다.")
 	@GetMapping("/check")
 	public boolean checkToday() {

@@ -1,3 +1,4 @@
+/* 메인 컨테이너 */
 .main_container {
     width: 60vw;
     height: 93vh;
@@ -7,10 +8,12 @@
     border-radius: 10px;
 }
 
+/* 헤더 */
 .header {
     padding: 30px 40px 10px 40px;
 }
 
+/* 헤더 제목 */
 .header h1 {
     display: flex;
     color: white;
@@ -18,11 +21,13 @@
     font-weight: bold;
 }
 
+/* 헤더 전체 컨테이너 */
 .title_container {
     display: flex;
     justify-content: space-between;
 }
 
+/* "메일 보내기" 버튼 */
 .title_container button {
     border: none;
     margin-top: 20px;
@@ -30,10 +35,12 @@
     background-color: #4dcf22 !important;
 }
 
+/* "메일 보내기" 버튼 hover */
 .title_container button:hover {
     background-color: #2DB400 !important;
 }
 
+/* 검색 컨테이너 */
 .search {
     font-size: 1rem;
     display: flex;
@@ -41,12 +48,14 @@
     gap: 10px;
 }
 
+/* 검색 입력창 */
 .search input {
     border: 0.5px solid lightgrey;
     border-radius: 7px;
     padding: 10px;
 }
 
+/* 검색 버튼 */
 .search button {
     padding: 10px 10px;
     background-color: #61a7f8;
@@ -56,21 +65,25 @@
     font-size: 1rem;
 }
 
+/* 할 일 메인 컨테이너 */
 .todo_main_container {
     padding: 20px 20px;
     background-color: #f0f0f0;
 }
 
+/* 할 일 리스트 ul */
 .todo_main_container ul {
     padding: 0;
 }
 
+/* 할 일 추가 컨테이너 */
 .input_todo {
     display: flex;
     justify-content: center;
     padding: 7px 0;
 }
 
+/* 할 일 추가 입력창 */
 .input_todo input {
     width: 500px;
     padding: 10px;
@@ -80,6 +93,7 @@
     margin-right: 10px;
 }
 
+/* 할 일 추가 버튼 */
 .input_todo button {
     padding: 7px 12px;
     background-color: #ffcc00;
@@ -89,46 +103,25 @@
     font-size: 1.2rem;
 }
 
+/* 할 일 추가 버튼 hover */
 .input_todo button:hover {
     background-color: #e4b600;
 }
 
-.todo_lists_container {
-    margin-bottom: 20px;
-}
-
+/* 할 일 추가 + 전체 Lists 컨테이너 */
 .total_container {
     background-color: #f8f8f8;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.total_todo_container,
-.completed_todo_container {
-    background-color: #f8f8f8;
-    padding: 10px 15px;
+/* 전체 Lists 컨테이너 */
+.total_lists_container {
     margin-bottom: 20px;
-    height: 285px;
-    display: flex;
-    flex-direction: column;
 }
 
-.total_todo_container h2,
-.completed_todo_container h2 {
-    flex-shrink: 0;
-    margin-bottom: 10px;
-}
-
-.total_todo_container ul,
-.completed_todo_container ul {
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    overflow-y: auto;
-    list-style: none;
-}
-
-.todo_lists_container h2 {
+/* 전체 Lists 컨테이너 h2 */
+.total_lists_container h2 {
     font-size: 1.5rem;
     color: #333;
     margin-top: 10px;
@@ -137,13 +130,43 @@
     display: flex;
 }
 
+/* To-Do List, completed List 컨테이너 */
+.todo_list_container,
+.completed_list_container {
+    background-color: #f8f8f8;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    height: 285px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* To-Do List, completed List 제목 */
+.todo_list_container h2,
+.completed_list_container h2 {
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+/* To-Do List, completed List ul */
+.todo_list_container ul,
+.completed_list_container ul {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    overflow-y: auto;
+    list-style: none;
+}
+
+/* 조회되는 데이터가 없는 경우 */
 .comment {
     font-size: 1.2rem;
     color: red;
 }
 
-.total_todo,
-.completed_todo {
+/* 각 List 별 item */
+.todo_list,
+.completed_list {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
@@ -156,19 +179,22 @@
     position: relative;
 }
 
-.total_todo input[type="checkbox"],
-.completed_todo input[type="checkbox"] {
+/* 각 List 별 checkbox */
+.todo_list input[type="checkbox"],
+.completed_list input[type="checkbox"] {
     margin-right: 10px;
 }
 
-.total_todo button,
-.completed_todo button {
+/* 각 List 별 button */
+.todo_list button,
+.completed_list button {
     padding: 0;
     margin: 0;
     border: none;
     background-color: inherit;
 }
 
+/* 할 일 내용 */
 .todo_content {
     flex: 1 1 auto;
     display: flex;
@@ -178,15 +204,18 @@
     white-space: nowrap;
 }
 
+/* To-Do List 내용 수정할 경우 */
 .todo_content input[type='text'] {
     width: 100%;
 }
 
-.completed_todo .todo_content {
+/* Completed List 내용 취소선 */
+.completed_list .todo_content {
     text-decoration: line-through;
     color: #999;
 }
 
+/* 수정, 삭제 아이콘 버튼 */
 .icon_buttons {
     display: flex;
     flex-grow: 0;
@@ -195,6 +224,7 @@
     margin-left: auto;
 }
 
+/* 삭제 버튼 (휴지통) */
 .delete_button {
     color: red;
 }

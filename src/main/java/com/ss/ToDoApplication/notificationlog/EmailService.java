@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ss.ToDoApplication.todo.TodoDTO;
 
+// 이메일 전송 서비스
 @Service
 public class EmailService {
 	private final JavaMailSender mailSender;
@@ -27,10 +28,11 @@ public class EmailService {
 		this.notificationLogRepository = notificationLogRepository;
 	}
 	
+	// To do List 이메일 전송
 	public void sendTodoEmail (List<TodoDTO> todos) {
 		String subject = "[오늘의 To do List]";
 		
-		// To-Do List, Completed List
+		// To-Do List, Completed List 분류
 		List<TodoDTO> todoList = todos.stream().filter(todo -> todo.getTodoStatus() == 0).collect(Collectors.toList());
 		List<TodoDTO> completedList = todos.stream().filter(todo -> todo.getTodoStatus() == 1).collect(Collectors.toList());
 		
@@ -65,7 +67,7 @@ public class EmailService {
 		// 메일 전송
 		mailSender.send(message);
 		
-		// 이메일 전송 후 저장
+		// 이메일 전송 후 알림 로그 저장
 		NotificationLog log = new NotificationLog();
 		log.setNotificationlogSentDate(LocalDate.now());
 		notificationLogRepository.save(log);
